@@ -1,8 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Game from './Game';
 
 const App = () => {
-  return <Game randomNumberCount={6} />;
+  const [gameId, setGameId] = useState(1);
+
+  return (
+    <Game
+      key={gameId}
+      randomNumberCount={6}
+      resetGameOnPress={() => setGameId(pre => pre + 1)}
+    />
+  );
 };
 
 export default App;

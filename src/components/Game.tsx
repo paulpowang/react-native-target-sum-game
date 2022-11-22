@@ -1,12 +1,18 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Button, StyleSheet, Text, View} from 'react-native';
 import React, {ReactElement, FC, useState, useCallback, useEffect} from 'react';
 import RandomNumber from './RandomNumber';
 
 type Props = {
   randomNumberCount: number;
+  timeSeconds?: number;
+  resetGameOnPress: () => {};
 };
 
-const Game: FC<Props> = ({randomNumberCount}): ReactElement => {
+const Game: FC<Props> = ({
+  randomNumberCount,
+  timeSeconds = 10,
+  resetGameOnPress,
+}): ReactElement => {
   const generateRandomNumbers = useCallback(
     () =>
       Array.from({length: randomNumberCount}).map(
@@ -102,12 +108,32 @@ const Game: FC<Props> = ({randomNumberCount}): ReactElement => {
       })),
     );
   }
+  const [remainingSeconds, setRemainingSeconds] = useState(timeSeconds);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setRemainingSeconds(prev => {
+        console.log(prev);
+        if (prev - 1 <= 0) {
+          clearInterval(intervalId);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   console.log(formatedNumbers);
 
   return (
     <View style={styles.container}>
       <Text style={styles.score}>{score}</Text>
+      <Text style={styles.score}>{remainingSeconds}</Text>
       <Text style={styles.target}>{targetSum}</Text>
       <Text
         style={[
@@ -133,6 +159,9 @@ const Game: FC<Props> = ({randomNumberCount}): ReactElement => {
           />
         ))}
       </View>
+      {remainingSeconds === 0 && (
+        <Button onPress={() => resetGameOnPress()} title="Play Again" />
+      )}
     </View>
   );
 };
