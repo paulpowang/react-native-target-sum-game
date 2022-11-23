@@ -5,7 +5,7 @@ import RandomNumber from './RandomNumber';
 type Props = {
   randomNumberCount: number;
   timeSeconds?: number;
-  resetGameOnPress: () => {};
+  resetGameOnPress: () => void;
 };
 
 const Game: FC<Props> = ({
@@ -125,15 +125,17 @@ const Game: FC<Props> = ({
     return () => {
       clearInterval(intervalId);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   console.log(formatedNumbers);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.score}>{score}</Text>
-      <Text style={styles.score}>{remainingSeconds}</Text>
+      <View>
+        <Text style={styles.score}>Score: {score}</Text>
+        <Text style={styles.score}>Time: {remainingSeconds}</Text>
+      </View>
+
       <Text style={styles.target}>{targetSum}</Text>
       <Text
         style={[
